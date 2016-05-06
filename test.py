@@ -22,6 +22,9 @@ class SignedTextEdit(QtWidgets.QWidget):
     def _update_label(self):
         '''Slot to update the label'''
         self.sha1label.setText(self._sha1_string())
+    def toPlainText(self):
+        '''Wrapper'''
+        return self.my_text.toPlainText()
 
 
 class button_printer_ender(QtWidgets.QPushButton):
