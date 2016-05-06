@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import hashlib
 
 class SignedTextEdit(QtWidgets.QWidget):
@@ -19,6 +20,7 @@ class SignedTextEdit(QtWidgets.QWidget):
         '''Computes the string to be displayed on the label'''
         text = self.my_text.toPlainText()
         return 'SHA1: '+hashlib.sha1(text.encode()).hexdigest()
+    @pyqtSlot('void', name='update_label', result='void')
     def _update_label(self):
         '''Slot to update the label'''
         self.sha1label.setText(self._sha1_string())
