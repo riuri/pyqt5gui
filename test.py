@@ -6,6 +6,7 @@ import hashlib
 
 class SignedTextEdit(QtWidgets.QWidget):
     '''Widget for editing a text while displaying some checksums'''
+    textChanged = pyqtSignal(str)
     def __init__(self, initial_text=''):
         '''Creates the widget with optionally an initial text'''
         QtWidgets.QWidget.__init__(self)
@@ -24,6 +25,7 @@ class SignedTextEdit(QtWidgets.QWidget):
     def _update_label(self):
         '''Slot to update the label'''
         self.sha1label.setText(self._sha1_string())
+        self.textChanged.emit(self.toPlainText())
     def toPlainText(self):
         '''Wrapper'''
         return self.my_text.toPlainText()
@@ -46,6 +48,7 @@ if __name__ == '__main__':
     org = QtWidgets.QVBoxLayout()
     hello = QtWidgets.QLabel('Type some text and click the button')
     text = SignedTextEdit()
+    text.textChanged.connect(lambda x: print(x))
     button = button_printer_ender(app, text)
     org.addWidget(hello)
     org.addWidget(text)
