@@ -13,6 +13,8 @@ class SignedTextEdit(QtWidgets.QWidget):
         self.my_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.my_layout)
         self.my_text = QtWidgets.QTextEdit(initial_text)
+        self.setText = self.my_text.setText
+        self.toPlainText = self.my_text.toPlainText
         self.my_layout.addWidget(self.my_text)
         self.sha1label = QtWidgets.QLabel(self._sha1_string())
         self.my_layout.addWidget(self.sha1label)
@@ -26,22 +28,37 @@ class SignedTextEdit(QtWidgets.QWidget):
         '''Slot to update the label'''
         self.sha1label.setText(self._sha1_string())
         self.textChanged.emit(self.toPlainText())
-    def toPlainText(self):
-        '''Wrapper'''
-        return self.my_text.toPlainText()
-    def clear_text(self):
-        '''Simply sets the text to \'\''''
-        self.my_text.setText('')
+    def open_text(self, filename):
+        '''Opens a file and sets the text to the contents of the file'''
+        with open(filename, 'r') as f:
+            contents = f.read()
+            self.setText(contents)
+    def save_text(self, filename):
+        '''Saves the contents of the textEdit to the file'''
+        with open(filename, 'w') as f:
+            contents = self.toPlainText()
+            f.write(contents)
+
 
 
 class button_printer_ender(QtWidgets.QPushButton):
-    '''Class for a button that prints a QTextEdit and ends a QApplication'''
+    '''Class for a button that chooses a file, prints a QTextEdit and ends a QApplication'''
     def __init__(self, application, textedit):
         QtWidgets.QPushButton.__init__(self, 'Print and quit')
         self.app = application
         self.txt = textedit
         self.clicked.connect(self._callback)
+    def _choose_file(self):
+        '''Just open a dialog and choose a single file for saving'''
+        f = QtWidgets.QFileDialog(self, 'Save file')
+        f.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+        f.setFileMode(QtWidgets.QFileDialog.AnyFile)
+        if f.exec() == QtWidgets.QDialog.Accepted:
+            return f.selectedFiles()[0]
+        else:
+            return None
     def _callback(self, **kwargs):
+        #print(self._choose_file())
         print(self.txt.toPlainText())
         self.app.closeAllWindows()
         self.app.quit()
@@ -53,6 +70,12 @@ class file_menu(QtWidgets.QMenu):
         self.new_action = QtWidgets.QAction('New', win)
         self.new_action.triggered.connect(win.new_file)
         self.addAction(self.new_action)
+        self.open_action = QtWidgets.QAction('Open', win)
+        self.open_action.triggered.connect(win.centralWidget().open_file)
+        self.addAction(self.open_action)
+        self.save_action = QtWidgets.QAction('Save', win)
+        self.save_action.triggered.connect(win.centralWidget().save_file)
+        self.addAction(self.save_action)
 
 class application_central_widget(QtWidgets.QWidget):
     '''The central widget that will be displayed in the main window'''
@@ -68,15 +91,31 @@ class application_central_widget(QtWidgets.QWidget):
         self.setLayout(self.org)
     def clear_text(self):
         '''Let's use it as intermediate'''
-        self.text.clear_text()
+        self.text.setText('')
+    @pyqtSlot('void')
+    def save_file(self):
+        '''Shows a dialog for opening a file'''
+        d = QtWidgets.QFileDialog(self, 'Save File')
+        d.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+        d.setFileMode(QtWidgets.QFileDialog.AnyFile)
+        if d.exec() == QtWidgets.QDialog.Accepted:
+            self.text.save_text(d.selectedFiles()[0])
+    @pyqtSlot('void')
+    def open_file(self):
+        '''Shows a dialog for saving a file'''
+        d = QtWidgets.QFileDialog(self, 'Open File')
+        d.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen)
+        d.setFileMode(QtWidgets.QFileDialog.AnyFile)
+        if d.exec() == QtWidgets.QDialog.Accepted:
+            self.text.open_text(d.selectedFiles()[0])
 
 class application_main_window(QtWidgets.QMainWindow):
     '''This is the main window widget for the application'''
     def __init__(self, app):
         QtWidgets.QMainWindow.__init__(self)
         self.central = application_central_widget(app)
-        self.file_menu = file_menu(self)
         self.setCentralWidget(self.central)
+        self.file_menu = file_menu(self)
     @pyqtSlot('void')
     def new_file(self):
         '''For now, just clear the TextEdit'''
