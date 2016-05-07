@@ -29,6 +29,9 @@ class SignedTextEdit(QtWidgets.QWidget):
     def toPlainText(self):
         '''Wrapper'''
         return self.my_text.toPlainText()
+    def clear_text(self):
+        '''Simply sets the text to \'\''''
+        self.my_text.setText('')
 
 
 class button_printer_ender(QtWidgets.QPushButton):
@@ -47,7 +50,9 @@ class file_menu(QtWidgets.QMenu):
     '''Why a class for a file menu? Enter the main window as argument'''
     def __init__(self, win):
         self = win.menuBar().addMenu('File')
-        self.addAction(QtWidgets.QAction('nothing', win))
+        self.new_action = QtWidgets.QAction('New', win)
+        self.new_action.triggered.connect(win.new_file)
+        self.addAction(self.new_action)
 
 class application_central_widget(QtWidgets.QWidget):
     '''The central widget that will be displayed in the main window'''
@@ -61,15 +66,27 @@ class application_central_widget(QtWidgets.QWidget):
         self.org.addWidget(self.text)
         self.org.addWidget(self.button)
         self.setLayout(self.org)
+    def clear_text(self):
+        '''Let's use it as intermediate'''
+        self.text.clear_text()
+
+class application_main_window(QtWidgets.QMainWindow):
+    '''This is the main window widget for the application'''
+    def __init__(self, app):
+        QtWidgets.QMainWindow.__init__(self)
+        self.central = application_central_widget(app)
+        self.file_menu = file_menu(self)
+        self.setCentralWidget(self.central)
+    @pyqtSlot('void')
+    def new_file(self):
+        '''For now, just clear the TextEdit'''
+        self.central.clear_text()
 
 class iuris_test_application(QtWidgets.QApplication):
     '''The main class for this application. Make it easy for use in main'''
     def __init__(self):
         QtWidgets.QApplication.__init__(self, ['Iuri\'s weird application'])
-        self.main_win = QtWidgets.QMainWindow()
-        self.central = application_central_widget(self)
-        self.file_menu = file_menu(self.main_win)
-        self.main_win.setCentralWidget(self.central)
+        self.main_win = application_main_window(self)
     def start(self):
         '''Start and run the created application'''
         self.main_win.show()
