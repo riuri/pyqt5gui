@@ -40,6 +40,7 @@ class button_printer_ender(QtWidgets.QPushButton):
         self.clicked.connect(self._callback)
     def _callback(self, **kwargs):
         print(self.txt.toPlainText())
+        self.app.closeAllWindows()
         self.app.quit()
 
 class application_central_widget(QtWidgets.QWidget):
