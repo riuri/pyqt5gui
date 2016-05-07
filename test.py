@@ -43,6 +43,12 @@ class button_printer_ender(QtWidgets.QPushButton):
         self.app.closeAllWindows()
         self.app.quit()
 
+class file_menu(QtWidgets.QMenu):
+    '''Why a class for a file menu? Enter the main window as argument'''
+    def __init__(self, win):
+        self = win.menuBar().addMenu('File')
+        self.addAction(QtWidgets.QAction('nothing', win))
+
 class application_central_widget(QtWidgets.QWidget):
     '''The central widget that will be displayed in the main window'''
     def __init__(self, app):
@@ -62,6 +68,7 @@ class iuris_test_application(QtWidgets.QApplication):
         QtWidgets.QApplication.__init__(self, ['Iuri\'s weird application'])
         self.main_win = QtWidgets.QMainWindow()
         self.central = application_central_widget(self)
+        self.file_menu = file_menu(self.main_win)
         self.main_win.setCentralWidget(self.central)
     def start(self):
         '''Start and run the created application'''
