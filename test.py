@@ -55,10 +55,18 @@ class application_central_widget(QtWidgets.QWidget):
         self.org.addWidget(self.button)
         self.setLayout(self.org)
 
+class iuris_test_application(QtWidgets.QApplication):
+    '''The main class for this application. Make it easy for use in main'''
+    def __init__(self):
+        QtWidgets.QApplication.__init__(self, ['Iuri\'s weird application'])
+        self.main_win = QtWidgets.QMainWindow()
+        self.central = application_central_widget(self)
+        self.main_win.setCentralWidget(self.central)
+    def start(self):
+        self.main_win.show()
+        self.exec()
+
+
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(['Iuri\'s weird application'])
-    main_win = QtWidgets.QMainWindow()
-    central = application_central_widget(app)
-    main_win.setCentralWidget(central)
-    main_win.show()
-    app.exec()
+    app = iuris_test_application()
+    app.start()
