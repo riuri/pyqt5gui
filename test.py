@@ -63,6 +63,7 @@ class iuris_test_application(QtWidgets.QApplication):
         self.central = application_central_widget(self)
         self.main_win.setCentralWidget(self.central)
     def start(self):
+        '''Start and run the created application'''
         self.main_win.show()
         self.exec()
 
