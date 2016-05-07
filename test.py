@@ -42,18 +42,23 @@ class button_printer_ender(QtWidgets.QPushButton):
         print(self.txt.toPlainText())
         self.app.quit()
 
+class application_central_widget(QtWidgets.QWidget):
+    '''The central widget that will be displayed in the main window'''
+    def __init__(self, app):
+        QtWidgets.QWidget.__init__(self)
+        self.org = QtWidgets.QVBoxLayout()
+        self.hello = QtWidgets.QLabel('Type some text and click the button')
+        self.text = SignedTextEdit()
+        self.button = button_printer_ender(app, self.text)
+        self.org.addWidget(self.hello)
+        self.org.addWidget(self.text)
+        self.org.addWidget(self.button)
+        self.setLayout(self.org)
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(['Iuri\'s weird application'])
     main_win = QtWidgets.QMainWindow()
-    org = QtWidgets.QVBoxLayout()
-    central = QtWidgets.QWidget()
-    hello = QtWidgets.QLabel('Type some text and click the button')
-    text = SignedTextEdit()
-    button = button_printer_ender(app, text)
-    org.addWidget(hello)
-    org.addWidget(text)
-    org.addWidget(button)
-    central.setLayout(org)
+    central = application_central_widget(app)
     main_win.setCentralWidget(central)
     main_win.show()
     app.exec()
