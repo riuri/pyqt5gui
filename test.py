@@ -9,7 +9,7 @@ class SignedTextEdit(QtWidgets.QWidget):
     textChanged = pyqtSignal(str)
     def __init__(self, initial_text=''):
         '''Creates the widget with optionally an initial text'''
-        QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.my_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.my_layout)
         self.my_text = QtWidgets.QTextEdit(initial_text)
@@ -46,7 +46,7 @@ class ButtonPrinterEnder(QtWidgets.QPushButton):
     QApplication
     '''
     def __init__(self, application, textedit):
-        QtWidgets.QPushButton.__init__(self, 'Print and quit')
+        super().__init__('Print and quit')
         self.app = application
         self.txt = textedit
         self.clicked.connect(self._callback)
@@ -82,7 +82,7 @@ class FileMenu(QtWidgets.QMenu):
 class ApplicationCentralWidget(QtWidgets.QWidget):
     '''The central widget that will be displayed in the main window'''
     def __init__(self, app):
-        QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.org = QtWidgets.QVBoxLayout()
         self.hello = QtWidgets.QLabel('Type some text and click the button')
         self.text = SignedTextEdit()
@@ -114,7 +114,7 @@ class ApplicationCentralWidget(QtWidgets.QWidget):
 class ApplicationMainWindow(QtWidgets.QMainWindow):
     '''This is the main window widget for the application'''
     def __init__(self, app):
-        QtWidgets.QMainWindow.__init__(self)
+        super().__init__()
         self.central = ApplicationCentralWidget(app)
         self.setCentralWidget(self.central)
         self.file_menu = FileMenu(self)
@@ -126,7 +126,7 @@ class ApplicationMainWindow(QtWidgets.QMainWindow):
 class IurisTestApplication(QtWidgets.QApplication):
     '''The main class for this application. Make it easy for use in main'''
     def __init__(self):
-        QtWidgets.QApplication.__init__(self, ['Iuri\'s weird application'])
+        super().__init__(['Iuri\'s weird application'])
         self.main_win = ApplicationMainWindow(self)
     def start(self):
         '''Start and run the created application'''
