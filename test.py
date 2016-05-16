@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import hashlib
 
@@ -39,7 +39,11 @@ class SignedTextEdit(QtWidgets.QWidget):
             contents = self.toPlainText()
             f.write(contents)
 
-
+class SignedTextEdit2(QtWebEngineWidgets.QWebEngineView):
+    '''Try to make a simple HTML class'''
+    def __init__(self):
+        super().__init__()
+        self.setUrl(QtCore.QUrl('http://www-scf.usc.edu/~lrezende/'))
 
 class ButtonPrinterEnder(QtWidgets.QPushButton):
     '''Class for a button that chooses a file, prints a QTextEdit and ends a
@@ -85,7 +89,7 @@ class ApplicationCentralWidget(QtWidgets.QWidget):
         super().__init__()
         self.org = QtWidgets.QVBoxLayout()
         self.hello = QtWidgets.QLabel('Type some text and click the button')
-        self.text = SignedTextEdit()
+        self.text = SignedTextEdit2()
         self.button = ButtonPrinterEnder(app, self.text)
         self.org.addWidget(self.hello)
         self.org.addWidget(self.text)
