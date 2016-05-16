@@ -3,6 +3,7 @@
 from PyQt5 import QtWidgets, QtWebEngineWidgets, QtCore
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 import hashlib
+import iurichat
 
 class SignedTextEdit(QtWidgets.QWidget):
     '''Widget for editing a text while displaying some checksums'''
@@ -38,12 +39,6 @@ class SignedTextEdit(QtWidgets.QWidget):
         with open(filename, 'w') as f:
             contents = self.toPlainText()
             f.write(contents)
-
-class SignedTextEdit2(QtWebEngineWidgets.QWebEngineView):
-    '''Try to make a simple HTML class'''
-    def __init__(self):
-        super().__init__()
-        self.setUrl(QtCore.QUrl('http://www-scf.usc.edu/~lrezende/'))
 
 class ButtonPrinterEnder(QtWidgets.QPushButton):
     '''Class for a button that chooses a file, prints a QTextEdit and ends a
@@ -89,7 +84,7 @@ class ApplicationCentralWidget(QtWidgets.QWidget):
         super().__init__()
         self.org = QtWidgets.QVBoxLayout()
         self.hello = QtWidgets.QLabel('Type some text and click the button')
-        self.text = SignedTextEdit2()
+        self.text = SignedTextEdit()
         self.button = ButtonPrinterEnder(app, self.text)
         self.org.addWidget(self.hello)
         self.org.addWidget(self.text)
@@ -131,7 +126,7 @@ class IurisTestApplication(QtWidgets.QApplication):
     '''The main class for this application. Make it easy for use in main'''
     def __init__(self):
         super().__init__(['Iuri\'s weird application'])
-        self.main_win = ApplicationMainWindow(self)
+        self.main_win = iurichat.ChatMainWindow(self)
     def start(self):
         '''Start and run the created application'''
         self.main_win.show()
