@@ -5,12 +5,26 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
 class ChatView(QtWebEngineWidgets.QWebEngineView):
     '''Try to make a simple HTML class'''
+    header_css = '''<html>
+    <head>
+    <style type='text/css'>
+    .me {
+        text-align: right;
+        color: blue;
+    }
+    .other {
+        text-align: left;
+        color: red;
+    }
+    </style>
+    </head>
+    <body>'''
+    footer = '</body></html>'
     def __init__(self):
         super().__init__()
-        self.setUrl(QtCore.QUrl('about:blank'))
+        self.chatHtmlContent = ''
+        self.setHtml(self.header_css+self.chatHtmlContent+self.footer)
         self.setZoomFactor(2)
-    def toPlainText(self):
-        return None
 
 class TypeBox(QtWidgets.QWidget):
     '''A text box and a button for submitting'''
