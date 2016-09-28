@@ -49,7 +49,7 @@ class TypeBox(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QHBoxLayout())
         self.layout().addWidget(self.input)
         self.layout().addWidget(self.button)
-    @pyqtSlot('void')
+    #@pyqtSlot('void')
     def requestedSubmission(self):
         '''Called upon button press'''
         text = self.input.text()
